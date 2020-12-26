@@ -11,6 +11,9 @@
     "test": "mocha --require test/setup.js"
   },
   "keywords": [],
+  "engines": {
+    "node": "12.19.0"
+    },
   "author": "Lara Dei",
   "license": "ISC",
   "dependencies": {
