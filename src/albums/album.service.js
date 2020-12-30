@@ -1,12 +1,17 @@
 const AlbumService = {
-    getAllAlbums(knex) {
-      return knex.select('*').from('albums')
+
+    getAllAlbums(knex, id) {
+      console.log(id)
+      return knex
+        .select('*')
+        //.where('user_id', id)
+        .from('keepbox_albums')
     },
   
     insertAlbum(knex, newAblbum) {
       return knex
         .insert(newAblbum)
-        .into('albums')
+        .into('album')
         .returning('*')
         .then(rows => {
           return rows[0]
@@ -15,20 +20,20 @@ const AlbumService = {
   
     getById(knex, id) {
       return knex
-        .from('albums')
+        .from('album')
         .select('*')
         .where('id', id)
         .first()
     },
   
     deleteAlbum(knex, id) {
-      return knex('albums')
+      return knex('album')
         .where({ id })
         .delete()
     },
   
     updateAlbum(knex, id, newAlbumFields) {
-      return knex('albums')
+      return knex('album')
         .where({ id })
         .update(newAlbumFields)
     },

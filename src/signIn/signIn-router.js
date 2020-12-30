@@ -1,10 +1,10 @@
 const express = require('express')
 const SignInService = require('./signIn.service')
 
-const sighInRouter = express.Router()
+const signInRouter = express.Router()
 const jsonBodyParser = express.json()
 
-sighInRouter
+signInRouter
   .post('/login', jsonBodyParser, (req, res, next) => {
     const { email, password } = req.body
     const loginUser = { email, password }
@@ -15,21 +15,21 @@ sighInRouter
           error: `Missing '${key}' in request body`
         })
 
-        SignInService.getUserWithEmail(
+      SignInService.getUserWithEmail(
       req.app.get('db'),
       loginUser.email
     )
       .then(dbUser => {
         if (!dbUser)
           return res.status(400).json({
-            error: 'Incorrect email or password',
+            error: 'Incorrect email or password 1',
           })
 
         return SignInService.comparePasswords(loginUser.password, dbUser.password)
           .then(compareMatch => {
             if (!compareMatch)
               return res.status(400).json({
-                error: 'Incorrect user_name or password',
+                error: 'Incorrect email or password 2',
               })
 
             const sub = dbUser.email
@@ -42,4 +42,4 @@ sighInRouter
       .catch(next)
   })
 
-module.exports = sighInRouter
+module.exports = signInRouter

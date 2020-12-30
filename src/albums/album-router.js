@@ -6,17 +6,18 @@ const { requireAuth } = require('../middleware/jwt-auth')
 const albumRouter = express.Router()
 const jsonParser = express.json()
 
-// const serializealbum = album => ({
-//   id: album.id,
-//...addmore
-// })
+ const serializeAlbum = album => ({
+    id: album.id,
+    title: album.title,
+    user_id: albumRouter.user_id
+})
 
 albumRouter
   .route('/')
   .all(requireAuth)
   .get((req, res, next) => {
     AlbumService.getAllAlbums(
-      req.app.get('db')
+      req.app.get('db'), req.params
     )
       .then(Albums => {
         res.json(Albums)
@@ -24,8 +25,8 @@ albumRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { } = req.body
-    const newAlbum = {   }
+    const { title} = req.body
+    const newAlbum = { title  }
 
     for (const [key, value] of Object.entries(newAlbum)) {
         if (value == null) {
