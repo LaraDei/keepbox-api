@@ -1,34 +1,41 @@
 const PhotoService = {
-    getAllPhotos(knex) {
-      return knex.select('*').from('photos')
+    getAllPhotos(knex, userId) {
+      return knex
+        .select('*')
+        .where('user_id', userId)
+        .from('keepbox_photos')
     },
   
     insertPhoto(knex, newPhoto) {
       return knex
         .insert(newPhoto)
-        .into('photos')
+        .into('keepbox_photos')
+        .where('user_id', newPhoto.user_id)
         .returning('*')
         .then(rows => {
           return rows[0]
         })
     },
   
-    getById(knex, id) {
+    getById(knex, id, userId) {
       return knex
-        .from('photos')
+        .from('keepbox_photos')
         .select('*')
+        .where('user_id', userId)
         .where('id', id)
         .first()
     },
   
-    deletePhoto(knex, id) {
-      return knex('photos')
+    deletePhoto(knex, id, userId) {
+      return knex('keepbox_photos')
+        .where('user_id', userId)
         .where({ id })
         .delete()
     },
   
     updatePhoto(knex, id, newPhotoFields) {
-      return knex('photos')
+      return knex('keepbox_photos')
+        .where('user_id', newPhotoFields.user_id )
         .where({ id })
         .update(newPhotoFields)
     },

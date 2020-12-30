@@ -1,23 +1,30 @@
 const path = require('path')
 const express = require('express')
-//const xss = require('xss')
 const PhotoService = require('./photo.service')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const photoRouter = express.Router()
 const jsonParser = express.json()
 
-// const serializePhoto = Photo => ({
-//   id: Photo.id,
-//...addmore
-// })
+const serializePhoto = Photo => ({
+  id: Photo.id,
+  caption: Photo.caption,
+  summary: Photo.summary,
+  file_location: Photo.file_location,
+  date_uploaded: Photo.date_uploaded,
+  date_created: Photo.date_created,
+  age: Photo.age,
+  user_id: Photo.user_id,
+  album_id: Photo.album_id,
+})
 
 photoRouter
   .route('/')
   .all(requireAuth)
   .get((req, res, next) => {
     PhotoService.getAllPhotos(
-      req.app.get('db')
+      req.app.get('db'),
+      req.user.id
     )
       .then(Photos => {
         res.json(Photos)
@@ -25,13 +32,14 @@ photoRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { } = req.body
-    const newPhoto = {   }
+    const { caption, summary, file_location, album_id, date_created } = req.body
+    const user_id = req.user.id
+    const newPhoto = {caption, summary, file_location, album_id, user_id, date_created  }
 
-    for (const [key, value] of Object.entries(newPhoto)) {
-        if (value == null) {
+    for (const field of ['caption', 'file_location', 'album_id']) {
+      if (!req.body[field])  {
             return res.status(400).json({
-                error: { message: `Missing '${key}' in request body` }
+                error: { message: `Missing '${field}' in request body` }
             })
         }
     }
@@ -55,7 +63,8 @@ photoRouter
   .all((req, res, next) => {
     PhotoService.getById(
       req.app.get('db'),
-      req.params.Photo_id
+      req.params.Photo_id,
+      req.user.id
     )
       .then(Photo => {
         if (!Photo) {
@@ -74,7 +83,8 @@ photoRouter
   .delete((req, res, next) => {
     PhotoService.deletePhoto(
       req.app.get('db'),
-      req.params.Photo_id
+      req.params.Photo_id,
+      req.user.id
     )
       .then(send => {
         res.status(200).json("photo deleted")
@@ -82,8 +92,9 @@ photoRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const {  } = req.body
-    const PhotoToUpdate  = {   }
+    const { caption, summary, file_location, album_id, date_created, age  } = req.body
+    const user_id = req.user.id
+    const PhotoToUpdate  = { caption, summary, file_location, album_id, user_id, date_created, age }
 
    const numberOfValues = Object.values(PhotoToUpdate).filter(Boolean).length
         if (numberOfValues  === 0) {
