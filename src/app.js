@@ -37,9 +37,9 @@ app.use(
 // })
 
 
-app.use('/api/auth/', signUpRouter)
+app.use('/api/auth', signUpRouter)
 
-app.use('/api/auth/', signInRouter)
+app.use('/api/auth', signInRouter)
 
 app.use('/api/photo', photoRouter)
 
@@ -48,6 +48,8 @@ app.use('/api/album', albumRouter)
 app.get('/', (req, res) => {
     res.send('Hello, world!')
 })
+
+
 
 
 app.use(function errorHandler(error, req, res, next) {
