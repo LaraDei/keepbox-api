@@ -1,6 +1,6 @@
 const express = require('express')
 const SignInService = require('./signIn.service')
-
+const { requireAuth } = require('../middleware/jwt-auth')
 const signInRouter = express.Router()
 const jsonBodyParser = express.json()
 
@@ -40,6 +40,14 @@ signInRouter
           })
       })
       .catch(next)
+  })
+
+  signInRouter.post('/refresh', requireAuth, (req, res) => {
+    const sub = req.user.email
+    const payload = { user_id: req.user.id }
+    res.send({
+      authToken: SignInService.createJwt(sub, payload),
+    })
   })
 
 module.exports = signInRouter
