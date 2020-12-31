@@ -37,7 +37,7 @@ app.use(
 // })
 
 
-app.use('/api/auth/sign-up', signUpRouter)
+app.use('/api/auth/', signUpRouter)
 
 app.use('/api/auth/', signInRouter)
 

@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const xss = require('xss')
 
-const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
+const REGEX_UPPER_LOWER_NUMBER = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[\S]+/
 
 const SignUpService = {
   hasUserWithEmail(db, email) {
@@ -27,8 +27,8 @@ const SignUpService = {
     if (password.startsWith(' ') || password.endsWith(' ')) {
       return 'Password must not start or end with empty spaces'
     }
-    if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
-      return 'Password must contain one upper case, lower case, number and special character'
+    if (!REGEX_UPPER_LOWER_NUMBER.test(password)) {
+      return 'Password must contain one upper case, lower case, and number'
     }
     return null
   },
