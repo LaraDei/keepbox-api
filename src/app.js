@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
+const {CLIENT_ORIGIN} = require('./config');
 const photoRouter = require('./photos/photo-router')
 const albumRouter = require('./albums/album-router')
 const signUpRouter = require('./signUp/signUp-router')
@@ -17,7 +18,9 @@ const morganOption = (NODE_ENV === 'production')
   app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
     skip: () => NODE_ENV === 'test',
   }))
-  app.use(cors())
+  app.use(cors({
+    origin: CLIENT_ORIGIN
+}))
   app.use(helmet())
 
 // app.use(function validateBearerToken(req, res, next) {

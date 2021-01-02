@@ -94,14 +94,13 @@ photoRouter
   .patch(jsonParser, (req, res, next) => {
     const { caption, summary, file_location, album_id, date_created, age  } = req.body
     const user_id = req.user.id
-    const PhotoToUpdate  = { caption, summary, file_location, album_id, user_id, date_created, age }
+    const PhotoToUpdate  = { caption, summary, file_location, album_id, user_id, date_created, age, }
 
-   const numberOfValues = Object.values(PhotoToUpdate).filter(Boolean).length
-        if (numberOfValues  === 0) {
-            return res.status(400).json({
-                error: { message: `Request body must contain either ...` }
-            })
-        }
+    for (const field of ['album_id'])
+      if (!req.body[field])
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`
+        })
 
     PhotoService.updatePhoto(
       req.app.get('db'),

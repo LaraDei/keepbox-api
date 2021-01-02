@@ -7,14 +7,14 @@ describe('Protected endpoints', function() {
 
   const {
     testUsers,
-    testArticles,
-    testComments,
-  } = helpers.makeArticlesFixtures()
+    testAlbums,
+    testPhotos,
+  } = helpers.makeAlbumsFixtures()
 
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
-      connection: process.env.TEST_DB_URL,
+      connection: process.env.TEST_DATABASE_URL,
     })
     app.set('db', db)
   })
@@ -25,12 +25,12 @@ describe('Protected endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
-  beforeEach('insert articles', () =>
-    helpers.seedArticlesTables(
+  beforeEach('insert albums', () =>
+    helpers.seedAlbumsTables(
       db,
       testUsers,
-      testArticles,
-      testComments,
+      testAlbums,
+      testPhotos,
     )
   )
 
@@ -45,11 +45,17 @@ describe('Protected endpoints', function() {
       path: '/api/photo/1',
       method: supertest(app).get,
     },
-    // {
-    //   name: 'POST /api/comments',
-    //   path: '/api/comments',
-    //   method: supertest(app).post,
-    // },
+    {
+      name: 'GET /api/album',
+      path: '/api/album/1',
+      method: supertest(app).get,
+    },
+    {
+      name: 'GET /api/photo/',
+      path: '/api/album/1',
+      method: supertest(app).get,
+    },
+
   ]
 
   protectedEndpoints.forEach(endpoint => {

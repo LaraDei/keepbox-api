@@ -64,14 +64,13 @@ function makeAlbumsArray(users) {
   ]
 }
 
-function makeCommentsArray(users, articles) {
+function makePhotosArray(users, albums) {
   return [
     {
       id: 1, 
-      location: "https://source.unsplash.com/skmzjgBlCIA/900x600",
+      file_location: "https://source.unsplash.com/skmzjgBlCIA/900x600",
       caption: "sand castle",
       summary: "",
-      author: "Photo by Giuseppe Famiani on Unsplash",
       album_id: albums[0].id,
       user_id: users[0].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
@@ -79,10 +78,9 @@ function makeCommentsArray(users, articles) {
     },
     {
       id: 2,
-      location: "https://source.unsplash.com/Rrp8yf_LKrg/600x900",
+      file_location: "https://source.unsplash.com/Rrp8yf_LKrg/600x900",
       caption: "construction paper santa face",
       summary: "",
-      author: "Photo by Markus Spiske on Unsplash",
       album_id: albums[0].id,
       user_id: users[1].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
@@ -90,10 +88,9 @@ function makeCommentsArray(users, articles) {
     },
     {
       id: 3,
-      location: "https://source.unsplash.com/HkzqKFYOn3M/600x900",
+      file_location: "https://source.unsplash.com/HkzqKFYOn3M/600x900",
       caption: "orange sun set with butterfly",
       summary: "",
-      author: "Photo by Andrey Shpigunov on Unsplash",
       album_id: albums[0].id,
       user_id: users[2].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
@@ -101,40 +98,29 @@ function makeCommentsArray(users, articles) {
     },
     {
       id: 4,
-      location: "https://test.unsplash.com/1VT2qoBtc-k/900x600",
+      file_location: "https://test.unsplash.com/1VT2qoBtc-k/900x600",
       caption: "child makes playdough rainbow",
       summary: "",
-      author: "Photo by Julietta Watson on Unsplash",
       album_id: albums[0].id,
       user_id: users[3].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
-      id: 5,
-      text: 'Fifth test comment!',
-      album_id: albums[articles.length - 1].id,
-      user_id: users[0].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
-      date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
-    },
-    {
       id: 6,
-      location: "https://source.unsplash.com/Ia02X7WcPn0/900x600",
+      file_location: "https://source.unsplash.com/Ia02X7WcPn0/900x600",
       caption: "fingpaint ghost",
       summary: "",
-      author: "Photo by Markus Spiske on Unsplash",
-      album_id: albums[articles.length - 1].id,
+      album_id: albums[albums.length - 1].id,
       user_id: users[2].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
       id: 7,
-      location: "https://source.unsplash.com/Ia02X7WcPn0/900x600",
+      file_location: "https://source.unsplash.com/Ia02X7WcPn0/900x600",
       caption: "fingpaint ghost",
       summary: "",
-      author: "Photo by Markus Spiske on Unsplash",
       album_id: albums[3].id,
       user_id: users[0].id,
       date_created: new Date('2029-01-22T16:28:32.615Z'),
@@ -211,7 +197,7 @@ function makeMaliciousAlbum(user) {
 function makeAlbumsFixtures() {
   const testUsers = makeUsersArray()
   const testAlbums = makeAlbumsArray(testUsers)
-  const testPhotos = makePhotossArray(testUsers, testAlbums)
+  const testPhotos = makePhotosArray(testUsers, testAlbums)
   return { testUsers, testAlbums, testPhotos }
 }
 
@@ -262,12 +248,12 @@ function seedAlbumsTables(db, users, albums, photos=[]) {
       `SELECT setval('keepbox_albums_id_seq', ?)`,
       [albums[albums.length - 1].id],
     )
-    // only insert comments if there are some, also update the sequence counter
-    if (comments.length) {
-      await trx.into('blogful_comments').insert(comments)
+    // only insert photos if there are some, also update the sequence counter
+    if (photos.length) {
+      await trx.into('keepbox_photos').insert(photos)
       await trx.raw(
-        `SELECT setval('blogful_comments_id_seq', ?)`,
-        [comments[comments.length - 1].id],
+        `SELECT setval('keepbox_photos_id_seq', ?)`,
+        [photos[photos.length - 1].id],
       )
     }
   })
@@ -292,11 +278,11 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 
 module.exports = {
   makeUsersArray,
-  makeArticlesArray,
+  makeAlbumsArray,
   makeExpectedAlbums,
   makeExpectedAlbumPhotos,
   makeMaliciousAlbum,
-  makeCommentsArray,
+  makePhotosArray,
 
   makeAlbumsFixtures,
   cleanTables,

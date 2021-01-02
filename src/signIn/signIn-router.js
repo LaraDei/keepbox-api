@@ -22,14 +22,14 @@ signInRouter
       .then(dbUser => {
         if (!dbUser)
           return res.status(400).json({
-            error: 'Incorrect email or password 1',
+            error: 'Incorrect email or password',
           })
 
         return SignInService.comparePasswords(loginUser.password, dbUser.password)
           .then(compareMatch => {
             if (!compareMatch)
               return res.status(400).json({
-                error: 'Incorrect email or password 2',
+                error: 'Incorrect email or password',
               })
 
             const sub = dbUser.email

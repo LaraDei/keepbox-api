@@ -1,10 +1,10 @@
 process.env.TZ = 'UTC'
 process.env.NODE_ENV = 'test'
 process.env.JWT_SECRET = 'test-jwt-secret'
-process.env.JWT_EXPIRY = '3m'
-
-process.env.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL || "postgresql://dunder_mifflin@localhost/keepbox-api-test"
+process.env.JWT_EXPIRY = '1h'
 require('dotenv').config()
+process.env.TEST_DATABASE_URL = process.env.TEST_DATABASE_URL || "postgresql://dunder_mifflin@localhost/keepbox-test"
+
 const { expect } = require('chai')
 const supertest = require('supertest')
 
