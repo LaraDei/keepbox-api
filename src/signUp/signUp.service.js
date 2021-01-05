@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const xss = require('xss')
 
 const REGEX_UPPER_LOWER_NUMBER = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[\S]+/
+const REGEX_EMAIL = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
 
 const SignUpService = {
   hasUserWithEmail(db, email) {
@@ -9,6 +10,12 @@ const SignUpService = {
       .where({ email })
       .first()
       .then(user => !!user)
+  },
+  validateEmail(email) {
+    if (!REGEX_EMAIL.test(email)) {
+      return 'Please enter a valid email'
+    }
+    return null
   },
   insertUser(db, newUser) {
     return db

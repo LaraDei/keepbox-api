@@ -17,9 +17,12 @@ signUpRouter
 
 
     const passwordError = SignUpService.validatePassword(password)
+    const emailError = SignUpService.validateEmail(email)
 
     if (passwordError)
       return res.status(400).json({ error: passwordError })
+    if (emailError)
+      return res.status(400).json({ error: emailError })
 
       SignUpService.hasUserWithEmail(
       req.app.get('db'),
