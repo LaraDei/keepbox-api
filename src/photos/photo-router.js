@@ -9,10 +9,9 @@ const jsonParser = express.json()
 const serializePhoto = Photo => ({
   id: Photo.id,
   caption: Photo.caption,
+  date_created: Photo.date_created,
   summary: Photo.summary,
   file_location: Photo.file_location,
-  date_uploaded: Photo.date_uploaded,
-  date_created: Photo.date_created,
   age: Photo.age,
   user_id: Photo.user_id,
   album_id: Photo.album_id,
@@ -39,7 +38,7 @@ photoRouter
     for (const field of ['caption', 'file_location', 'album_id']) {
       if (!req.body[field])  {
             return res.status(400).json({
-                error: { message: `Missing '${field}' in request body` }
+                error: `Missing '${field}' in request body`
             })
         }
     }
@@ -58,18 +57,18 @@ photoRouter
   })
 
   photoRouter
-  .route('/:Photo_id')
+  .route('/:photo_id')
   .all(requireAuth)
   .all((req, res, next) => {
     PhotoService.getById(
       req.app.get('db'),
-      req.params.Photo_id,
+      req.params.photo_id,
       req.user.id
     )
       .then(Photo => {
         if (!Photo) {
           return res.status(404).json({
-            error: { message: `Photo doesn't exist` }
+            error: `Photo doesn't exist`
           })
         }
         res.Photo = Photo
@@ -83,35 +82,14 @@ photoRouter
   .delete((req, res, next) => {
     PhotoService.deletePhoto(
       req.app.get('db'),
-      req.params.Photo_id,
+      req.params.photo_id,
       req.user.id
     )
       .then(send => {
-        res.status(200).json("photo deleted")
+        res.status(200).json({success: `Deleted Successfully`})
       })
       .catch(next)
   })
-  .patch(jsonParser, (req, res, next) => {
-    const { caption, summary, file_location, album_id, date_created, age  } = req.body
-    const user_id = req.user.id
-    const PhotoToUpdate  = { caption, summary, file_location, album_id, user_id, date_created, age, }
-
-    for (const field of ['album_id'])
-      if (!req.body[field])
-        return res.status(400).json({
-          error: `Missing '${field}' in request body`
-        })
-
-    PhotoService.updatePhoto(
-      req.app.get('db'),
-      req.params.Photo_id,
-      PhotoToUpdate
-    )
-      .then(numRowsAffected  => {
-        res
-          .status(204).end()
-      })
-      .catch(next)
-  })
+  
 
 module.exports = photoRouter

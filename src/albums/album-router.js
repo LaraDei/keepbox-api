@@ -8,7 +8,7 @@ const jsonParser = express.json()
  const serializeAlbum = album => ({
     id: album.id,
     title: album.title,
-    user_id: albumRouter.user_id
+    user_id: album.user_id,
 })
 
 albumRouter
@@ -16,7 +16,8 @@ albumRouter
   .all(requireAuth)
   .get((req, res, next) => {
     AlbumService.getAllAlbums(
-      req.app.get('db'), req.user.id
+      req.app.get('db'), 
+      req.user.id
     )
       .then(Albums => {
         res.json(Albums)
@@ -28,10 +29,10 @@ albumRouter
     const user_id = req.user.id
     const newAlbum = { title, user_id  }
 
-    for (const [key, value] of Object.entries(newAlbum)) {
-        if (value == null) {
+    for (const field of ['title', 'user_id']) {
+      if (!req.body[field])  {
             return res.status(400).json({
-                error: { message: `Missing '${key}' in request body` }
+                error: `Missing '${field}' in request body`
             })
         }
     }
@@ -61,7 +62,7 @@ albumRouter
       .then(Album => {
         if (!Album) {
           return res.status(404).json({
-            error: { message: `Album doesn't exist` }
+            error: `Album doesn't exist`
           })
         }
         res.Album = Album
@@ -72,41 +73,7 @@ albumRouter
   .get((req, res, next) => {
     res.json(serializeAlbum(res.Album))
   })
-  
-  .delete((req, res, next) => {
-    AlbumService.deleteAlbum(
-      req.app.get('db'),
-      req.params.Album_id,
-      req.user.id
-    )
-      .then(numRowsAffected => {
-        res.status(204).end()
-      })
-      .catch(next)
-  })
-  
-  .patch(jsonParser, (req, res, next) => {
-    const { title } = req.body
-    const user_id = req.user.id
-    const AlbumToUpdate  = { title, user_id  }
 
-   const numberOfValues = Object.values(AlbumToUpdate).filter(Boolean).length
-        if (numberOfValues  === 0) {
-            return res.status(400).json({
-                error: { message: `Request body must contain either ...` }
-            })
-        }
-
-    AlbumService.updateAlbum(
-      req.app.get('db'),
-      req.params.Album_id,
-      AlbumToUpdate
-    )
-      .then(numRowsAffected  => {
-        res
-          .status(204).end()
-      })
-      .catch(next)
-  })
+  
 
 module.exports = albumRouter

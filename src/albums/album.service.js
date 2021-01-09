@@ -26,20 +26,7 @@ const AlbumService = {
         .where('user_id', userId)
         .first()
     },
-  
-    deleteAlbum(knex, id, userId) {
-      return knex('keepbox_albums')
-        .where({ id })
-        .where('user_id', userId)
-        .delete()
-    },
-  
-    updateAlbum(knex, id, newAlbumFields) {
-      return knex('keepbox_albums')
-        .where({ id })
-        .where('user_id', newAlbumFields.user_id)
-        .update(newAlbumFields)
-    },
+
   }
   
   module.exports = AlbumService

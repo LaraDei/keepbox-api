@@ -73,7 +73,7 @@ function makePhotosArray(users, albums) {
       summary: "",
       album_id: albums[0].id,
       user_id: users[0].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
+      date_created: '2029-01-22T16:28:32.615Z',
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
@@ -83,7 +83,7 @@ function makePhotosArray(users, albums) {
       summary: "",
       album_id: albums[0].id,
       user_id: users[1].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
+      date_created: '2029-01-22T16:28:32.615Z',
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
@@ -93,7 +93,7 @@ function makePhotosArray(users, albums) {
       summary: "",
       album_id: albums[0].id,
       user_id: users[2].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
+      date_created: '2029-01-22T16:28:32.615Z',
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
@@ -103,7 +103,7 @@ function makePhotosArray(users, albums) {
       summary: "",
       album_id: albums[0].id,
       user_id: users[3].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
+      date_created: '2029-01-22T16:28:32.615Z',
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
@@ -113,7 +113,7 @@ function makePhotosArray(users, albums) {
       summary: "",
       album_id: albums[albums.length - 1].id,
       user_id: users[2].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
+      date_created: '2029-01-22T16:28:32.615Z',
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
     {
@@ -123,76 +123,64 @@ function makePhotosArray(users, albums) {
       summary: "",
       album_id: albums[3].id,
       user_id: users[0].id,
-      date_created: new Date('2029-01-22T16:28:32.615Z'),
+      date_created: '2029-01-22T16:28:32.615Z',
       date_uploaded: new Date('2029-01-22T16:28:32.615Z'),
     },
   ];
 }
 
-function makeExpectedAlbums(users, album, photos=[]) {
-  const author = users
-    .find(user => user.id === album.user_id)
-
-  const number_of_photos = photos
-    .filter(photo => photo.album_id === album.id)
-    .length
-
-  return {
+function makeExpectedAlbums(userId, albums, albumId) {
+  const expectedAlbums = albums
+    .filter(album => userId === album.user_id)
+  if(albumId){
+    const expectedAlbum = expectedAlbums.find(album => albumId === album.id)
+    return {
+      id: expectedAlbum.id,
+      title: expectedAlbum.title,
+      user_id: expectedAlbum.user_id
+    }
+  }
+  return expectedAlbums.map(album => {
+    return {
     id: album.id,
     title: album.title,
-    date_created: article.date_created.toISOString(),
-    number_of_photos,
-    author: {
-      id: author.id,
-      email: author.email,
-      full_name: author.full_name,
-      date_created: author.date_created.toISOString(),
-      date_modified: author.date_modified || null,
-    },
-  }
-}
-
-function makeExpectedAlbumPhotos(users, albumId, photos) {
-  const expectedPhotos = photos
-    .filter(photo => photo.album_id === albumId)
-
-  return expectedPhotos.map(photo => {
-    const photoUser = users.find(user => user.id === photo.user_id)
-    return {
-      id: photo.id,
-      caption: photo.caption,
-      date_created: photo.date_created.toISOString(),
-      date_uploaded: photo.date_uploaded,
-      summary: photo.summary,
-      file_location: photo.file_location,
-      age: photo.age,
-      user: {
-        id: commentUser.id,
-        email: commentUser.email,
-        full_name: commentUser.full_name,
-        date_created: commentUser.date_created.toISOString(),
-        date_modified: commentUser.date_modified || null,
-      }
+    date_created: album.date_created.toISOString(),
+    user_id: album.user_id
     }
   })
 }
 
-function makeMaliciousAlbum(user) {
-  const maliciousAlbum = {
-    id: 911,
-    title: 'Naughty naughty very naughty <script>alert("xss");</script>',
-    date_created: new Date(),
-    user_id: user.id,
-  }
-  const expectedAlbum = {
-    ...makeMaliciousAlbum([user], maliciousAlbum),
-    title: 'Naughty naughty very naughty &lt;script&gt;alert(\"xss\");&lt;/script&gt;Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.',
-  }
-  return {
-    maliciousAlbum,
-    expectedAlbum,
-  }
+function makeExpectedPhotos(userId, photos, photoId) {
+  const expectedPhotos = photos
+    .filter(photo => photo.user_id === userId)
+  if(photoId){
+    const expectedPhoto = expectedPhotos.find(photo => photoId === photo.id)
+    return {
+      id: expectedPhoto.id,
+      caption: expectedPhoto.caption,
+      date_created: expectedPhoto.date_created,
+      summary: expectedPhoto.summary,
+      file_location: expectedPhoto.file_location,
+      age: expectedPhoto.age || null,
+      user_id: expectedPhoto.user_id,
+      album_id: expectedPhoto.album_id,
+    }
+  } else
+  return expectedPhotos.map(photo => {
+    return {
+      id: photo.id,
+      caption: photo.caption,
+      summary: photo.summary,
+      file_location: photo.file_location,
+      date_uploaded: photo.date_uploaded.toISOString(),
+      date_created: photo.date_created,
+      age: photo.age || null,
+      user_id: photo.user_id,
+      album_id: photo.album_id,
+    }
+  })
 }
+
 
 function makeAlbumsFixtures() {
   const testUsers = makeUsersArray()
@@ -259,14 +247,6 @@ function seedAlbumsTables(db, users, albums, photos=[]) {
   })
 }
 
-function seedMaliciousAlbum(db, user, album) {
-  return seedUsers(db, [user])
-    .then(() =>
-      db
-        .into('keepbox_albums')
-        .insert([album])
-    )
-}
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
@@ -280,14 +260,12 @@ module.exports = {
   makeUsersArray,
   makeAlbumsArray,
   makeExpectedAlbums,
-  makeExpectedAlbumPhotos,
-  makeMaliciousAlbum,
+  makeExpectedPhotos,
   makePhotosArray,
 
   makeAlbumsFixtures,
   cleanTables,
   seedAlbumsTables,
-  seedMaliciousAlbum,
   makeAuthHeader,
   seedUsers,
 }

@@ -21,23 +21,16 @@ const PhotoService = {
       return knex
         .from('keepbox_photos')
         .select('*')
-        .where('user_id', userId)
         .where('id', id)
+        .where('user_id', userId)
         .first()
     },
   
-    deletePhoto(knex, id, userId) {
+    deletePhoto(knex, id) {
       return knex('keepbox_photos')
-        .where('user_id', userId)
-        .where({ id })
+        .where('id', id)
+        .where('user_id', id)
         .delete()
-    },
-  
-    updatePhoto(knex, id, newPhotoFields) {
-      return knex('keepbox_photos')
-        .where('user_id', newPhotoFields.user_id )
-        .where({ id })
-        .update(newPhotoFields)
     },
   }
   

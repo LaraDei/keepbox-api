@@ -47,11 +47,41 @@ describe('Protected endpoints', function() {
     },
     {
       name: 'GET /api/album',
+      path: '/api/album',
+      method: supertest(app).get,
+    },
+    {
+      name: 'GET /api/photo',
+      path: '/api/photo',
+      method: supertest(app).get,
+    },
+    {
+      name: 'POST /api/photo',
+      path: '/api/photo',
+      method: supertest(app).get,
+    },
+    {
+      name: 'POST /api/album',
+      path: '/api/album',
+      method: supertest(app).get,
+    },
+    {
+      name: 'DELETE /api/photo/:photo_id',
       path: '/api/album/1',
       method: supertest(app).get,
     },
     {
-      name: 'GET /api/photo/',
+      name: 'DELETE /api/album/:album_id',
+      path: '/api/album/1',
+      method: supertest(app).get,
+    },
+    {
+      name: 'PATCH /api/photo/:photo_id',
+      path: '/api/album/1',
+      method: supertest(app).get,
+    },
+    {
+      name: 'PATCH /api/album/:album_id',
       path: '/api/album/1',
       method: supertest(app).get,
     },

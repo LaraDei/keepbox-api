@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Users Endpoints', function() {
+describe('Sign up Endpoints', function() {
   let db
 
   const { testUsers } = helpers.makeAlbumsFixtures()
@@ -118,7 +118,7 @@ describe('Users Endpoints', function() {
     context(`Happy path`, () => {
       it(`responds 201, serialized user, storing bcryped password`, () => {
         const newUser = {
-          email: 'test email',
+          email: 'test@email.com',
           password: '11AAaa!!',
           full_name: 'test full_name',
         }
