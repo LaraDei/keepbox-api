@@ -31,7 +31,7 @@ photoRouter
       })
       .catch(next)
   })
-  .post(jsonParser, upload.single('img_location'), (req, res, next) => {
+  .post(jsonParser, upload.single('file_location'), (req, res, next) => {
     const image = req.file.location
     const file_location = image
     
