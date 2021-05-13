@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const PhotoService = require('./photo.service')
 const { requireAuth } = require('../middleware/jwt-auth')
+const upload = require('../middleware/uploader')
 
 const photoRouter = express.Router()
 const jsonParser = express.json()
@@ -11,7 +12,7 @@ const serializePhoto = Photo => ({
   caption: Photo.caption,
   date_created: Photo.date_created,
   summary: Photo.summary,
-  img_location: Photo.file_location,
+  file_location: Photo.file_location,
   age: Photo.age,
   user_id: Photo.user_id,
   album_id: Photo.album_id,
@@ -32,13 +33,13 @@ photoRouter
   })
   .post(jsonParser, upload.single('img_location'), (req, res, next) => {
     const image = req.file.location
-    const img_location = image
+    const file_location = image
     
     const { caption, summary, album_id, date_created } = req.body
     const user_id = req.user.id
-    const newPhoto = {caption, summary, img_location, album_id, user_id, date_created  }
+    const newPhoto = {caption, summary, file_location, album_id, user_id, date_created  }
 
-    for (const field of ['caption', 'img_location', 'album_id']) {
+    for (const field of ['caption', 'album_id']) {
       if (!req.body[field])  {
             return res.status(400).json({
                 error: `Missing '${field}' in request body`
