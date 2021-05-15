@@ -87,66 +87,66 @@ describe('Photos Endpoints', function() {
     })
 })
 
-  describe(`POST /api/photo`, () => {
-    beforeEach('insert photos', () =>
-      helpers.seedAlbumsTables(
-        db,
-        testUsers,
-        testAlbums,
-      )
-    )
+  // describe(`POST /api/photo`, () => {
+  //   beforeEach('insert photos', () =>
+  //     helpers.seedAlbumsTables(
+  //       db,
+  //       testUsers,
+  //       testAlbums,
+  //     )
+  //   )
 
-    it(`creates an photo, responding with 201 and the new photo`, function() {
-      this.retries(3)
-      const testUser = testUsers[0]
-      const testAlbum = testAlbums[0]
-      const newPhoto = {
-        caption: 'Test new photo',
-        album_id: testAlbum.id,
-        file_location: 'testfilelocation.jpeg',
-        user_id: testUser.id
-      }
-      return supertest(app)
-        .post('/api/photo')
-        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-        .send(newPhoto)
-        .expect(201)
-        .expect(res => {
-          expect(res.body).to.have.property('id')
-          expect(res.body.caption).to.eql(newPhoto.caption)
-          expect(res.body.file_location).to.eql(newPhoto.file_location)
-          expect(res.body.album_id).to.eql(newPhoto.album_id)
-          expect(res.body.user_id).to.eql(newPhoto.user_id)
-          const expectedDate = new Date(res.body.date_created).toLocaleString()
-          const actualDate = new Date(res.body.date_created).toLocaleString()
-          expect(actualDate).to.eql(expectedDate)
-        })
-    })
+  //   it(`creates an photo, responding with 201 and the new photo`, function() {
+  //     this.retries(3)
+  //     const testUser = testUsers[0]
+  //     const testAlbum = testAlbums[0]
+  //     const newPhoto = {
+  //       caption: 'Test new photo',
+  //       album_id: testAlbum.id,
+  //       file_location: 'testfilelocation.jpeg',
+  //       user_id: testUser.id
+  //     }
+  //     return supertest(app)
+  //       .post('/api/photo')
+  //       .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+  //       .send(newPhoto)
+  //       .expect(201)
+  //       .expect(res => {
+  //         expect(res.body).to.have.property('id')
+  //         expect(res.body.caption).to.eql(newPhoto.caption)
+  //         expect(res.body.file_location).to.eql(newPhoto.file_location)
+  //         expect(res.body.album_id).to.eql(newPhoto.album_id)
+  //         expect(res.body.user_id).to.eql(newPhoto.user_id)
+  //         const expectedDate = new Date(res.body.date_created).toLocaleString()
+  //         const actualDate = new Date(res.body.date_created).toLocaleString()
+  //         expect(actualDate).to.eql(expectedDate)
+  //       })
+  //   })
 
-    const requiredFields = ['caption', 'file_location', 'album_id']
+  //   const requiredFields = ['caption', 'file_location', 'album_id']
 
-    requiredFields.forEach(field => {
-      const testUser = testUsers[0]
-      const testAlbum = testAlbums[0]
-      const newPhoto = {
-        caption: 'Test new photo',
-        album_id: testAlbum.id,
-        file_location: 'testfilelocation.jpeg'
-      }
+  //   requiredFields.forEach(field => {
+  //     const testUser = testUsers[0]
+  //     const testAlbum = testAlbums[0]
+  //     const newPhoto = {
+  //       caption: 'Test new photo',
+  //       album_id: testAlbum.id,
+  //       file_location: 'testfilelocation.jpeg'
+  //     }
 
-      it(`responds with 400 and an error message when the '${field}' is missing`, () => {
-        delete newPhoto[field]
+  //     it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+  //       delete newPhoto[field]
 
-        return supertest(app)
-          .post('/api/photo')
-          .set('Authorization', helpers.makeAuthHeader(testUser))
-          .send(newPhoto)
-          .expect(400, {
-            error: `Missing '${field}' in request body`,
-          })
-      })
-    })
-  })
+  //       return supertest(app)
+  //         .post('/api/photo')
+  //         .set('Authorization', helpers.makeAuthHeader(testUser))
+  //         .send(newPhoto)
+  //         .expect(400, {
+  //           error: `Missing '${field}' in request body`,
+  //         })
+  //     })
+  //   })
+  // })
 
 
   describe(`DELETE /api/photo/:photo`, () => {
