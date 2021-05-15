@@ -8,7 +8,6 @@ const AlbumService = {
     },
   
     insertAlbum(knex, newAblbum) {
-      console.log(newAblbum)
       return knex
         .insert(newAblbum)
         .into('keepbox_albums')

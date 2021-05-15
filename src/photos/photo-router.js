@@ -31,14 +31,12 @@ photoRouter
       })
       .catch(next)
   })
-  .post(jsonParser, upload.single('file_location'), (req, res, next) => {
+  .post( upload.single('file_location'), (req, res, next) => {
     const image = req.file.location
     const file_location = image
-    
     const { caption, summary, album_id, date_created } = req.body
     const user_id = req.user.id
     const newPhoto = {caption, summary, file_location, album_id, user_id, date_created  }
-
     for (const field of ['caption', 'album_id']) {
       if (!req.body[field])  {
             return res.status(400).json({
@@ -54,7 +52,7 @@ photoRouter
       .then(Photo => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${Photo.id}`))
+          // .location(path.posix.join(req.originalUrl, `/${Photo.id}`))
           .json(serializePhoto(Photo))
       })
       .catch(next)
